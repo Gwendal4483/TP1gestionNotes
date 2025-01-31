@@ -1,4 +1,10 @@
+from src.services.note_manager import NoteManager
+
+
 def main():
+
+    manager = NoteManager()
+
     print("=== Gestionnaire de Notes ===")
     print("1. Créer une note")
     print("2. Voir les notes")
