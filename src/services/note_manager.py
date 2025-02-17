@@ -108,3 +108,52 @@ class NoteManager:
 
         except ValueError:
             print("Veuillez entrer un nombre valide.")
+
+
+
+
+
+    def supprimer_note(self):
+        """Affiche la liste des notes, permet d'en choisir une et de la supprimer avec confirmation."""
+        if not self.notes:
+            print("Aucune note disponible à supprimer.")
+            return
+
+        # Affichage de la liste des notes
+        print("\nListe des notes disponibles :")
+        for i, note in enumerate(self.notes):
+            print(f"{i + 1}. {note.titre} ({note.categorie})")
+
+        # Sélection d'une note
+        try:
+            choix = int(input("\nEntrez le numéro de la note à supprimer (0 pour annuler) : ")) - 1
+            if choix == -1:
+                print("Annulation de la suppression.")
+                return
+            if choix < 0 or choix >= len(self.notes):
+                print("Numéro invalide, veuillez réessayer.")
+                return
+
+            note = self.notes[choix]
+
+            # Confirmation avant suppression
+            confirmation = input(f"Êtes-vous sûr de vouloir supprimer la note '{note.titre}' ? (y/n) : ").strip().lower()
+            if confirmation != 'y':
+                print("Suppression annulée.")
+                return
+
+            # Suppression de la note
+            self.notes.pop(choix)
+
+            # Suppression du fichier associé
+            filename = f"data/{note.get_filename()}"
+            if os.path.exists(filename):
+                os.remove(filename)
+                print(f"Fichier '{filename}' supprimé.")
+            else:
+                print("Aucun fichier associé trouvé.")
+
+            print(f"\nNote '{note.titre}' supprimée avec succès !")
+
+        except ValueError:
+            print("Veuillez entrer un nombre valide.")

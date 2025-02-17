@@ -50,7 +50,7 @@ def menu_gestion_notes(manager):
         elif choix == "2":
             manager.modifier_note()
         elif choix == "3":
-            print("Suppression de note (à implémenter)...")
+            manager.supprimer_note()
         elif choix == "4":
             manager.afficher_notes()
         elif choix == "5":
