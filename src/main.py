@@ -1,4 +1,4 @@
-from src.services.note_manager import NoteManager
+from services.note_manager import NoteManager
 
 
 def main():
@@ -18,10 +18,11 @@ def main():
             tags = input("Tags (séparés par des virgules) : ").split(",")
 
             manager.ajouter_note(titre, contenu, categorie, tags)
-
+            main()
 
     elif choix == "2":
             manager.afficher_notes()
+            main()
             
     elif choix == "3":
         print("Au revoir !")

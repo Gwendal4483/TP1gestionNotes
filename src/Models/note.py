@@ -2,18 +2,17 @@ import yaml
 from datetime import datetime
 
 class Note:
-    def __init__(self, titre: str, contenu: str, categorie: str, tags: list, auteur: str = "Inconnu"): #le constructeur
-        self.titre = titre #titre de la note
-        self.contenu = contenu #contenu de la note
-        self.categorie = categorie #categorie de la note
-        self.tags = tags #tags de la note
-        self.auteur = auteur #auteur de la note
-        self.date_creation = datetime.now().strftime("%Y-%m-%d") #date de création de la note (initité mtn)
-        self.date_modification = self.date_creation #la date de la derniere modification de la note (initité mtn)
+    def __init__(self, titre: str, contenu: str, categorie: str, tags: list, auteur: str = "Inconnu",
+                 date_creation: str = None, date_modification: str = None): 
+        self.titre = titre
+        self.contenu = contenu
+        self.categorie = categorie
+        self.tags = tags
+        self.auteur = auteur
+        self.date_creation = date_creation if date_creation else datetime.now().strftime("%Y-%m-%d")
+        self.date_modification = date_modification if date_modification else self.date_creation
 
-
-
-    def to_yaml(self) -> str:  #convertit la note en format texte avec un en-tête YAML.
+    def to_yaml(self) -> str:
         metadata = {
             "titre": self.titre,
             "date_creation": self.date_creation,
@@ -22,8 +21,30 @@ class Note:
             "tags": self.tags,
             "auteur": self.auteur
         }
-        yaml_header = yaml.dump(metadata, default_flow_style=False, allow_unicode=True) #Convertit metadata en texte YAML.
-        return f"---\n{yaml_header}---\n\n{self.contenu}" #Retourne la note complète en texte
+        yaml_header = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
+        return f"---\n{yaml_header}---\n\n{self.contenu}"
 
-    def get_filename(self) -> str: #Génère le nom du fichier correspondant à la note
+    def get_filename(self) -> str:
         return f"{self.titre.replace(' ', '_').lower()}.txt"
+
+    @staticmethod
+    def from_yaml(yaml_text: str) -> "Note":
+        """Recrée une Note à partir d'un texte YAML"""
+        parts = yaml_text.split("---\n")  # Séparer le YAML du contenu
+        if len(parts) < 3:
+            raise ValueError("Format YAML invalide")
+
+        metadata_yaml = parts[1]
+        contenu = parts[2].strip()
+
+        metadata = yaml.safe_load(metadata_yaml)
+
+        return Note(
+            titre=metadata.get("titre", "Sans titre"),
+            contenu=contenu,
+            categorie=metadata.get("categorie", "Non classé"),
+            tags=metadata.get("tags", []),
+            auteur=metadata.get("auteur", "Inconnu"),
+            date_creation=metadata.get("date_creation"),
+            date_modification=metadata.get("date_modification")
+        )
