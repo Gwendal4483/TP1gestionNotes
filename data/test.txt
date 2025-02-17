@@ -1,11 +1,10 @@
 ---
 auteur: Inconnu
-categorie: test
+categorie: testtest
 date_creation: '2025-02-17'
 date_modification: '2025-02-17'
 tags:
-- test
-- ' test1'
+- ''
 titre: Test
 ---
 
