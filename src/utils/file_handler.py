@@ -4,15 +4,20 @@ from src.models.note import Note
 class FileHandler:
     @staticmethod
     def save_note(note: Note, folder: str = "data/"):
+        """Enregistre une note dans le dossier spécifié sans dupliquer la catégorie."""
+        
+        # Vérifie si le dossier existe, sinon le crée
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        filename = f"{folder}/{note.get_filename()}"
+        # 🔹 Utilisation de `os.path.join` pour générer le chemin du fichier
+        filename = os.path.join(folder, note.get_filename())
 
         with open(filename, "w", encoding="utf-8") as file:
             file.write(note.to_yaml())
 
         print(f"Note enregistrée dans {filename}")
+
 
     @staticmethod
     def load_notes(folder: str = "data/"):

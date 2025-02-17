@@ -10,12 +10,45 @@ class NoteManager:
     def __init__(self):
         self.notes = FileHandler.load_notes()  # Charge les notes au démarrage
 
-    def ajouter_note(self, titre, contenu, categorie, tags):
+
+
+    def ajouter_note(self, titre, contenu, tags):
+        """Ajoute une note en choisissant une catégorie existante ou en créant une nouvelle."""
+        categories = self.lister_categories()
+
+        # Affichage des catégories existantes
+        print("\nCatégories disponibles :")
+        for i, cat in enumerate(categories, 1):
+            print(f"{i}. {cat}")
+
+        # Choix de la catégorie
+        choix = input("\nEntrez le numéro de la catégorie ou tapez une nouvelle catégorie : ").strip()
+
+        if choix.isdigit() and 1 <= int(choix) <= len(categories):
+            categorie = categories[int(choix) - 1]
+        else:
+            categorie = choix.capitalize()  # Création d'une nouvelle catégorie
+
+        # Correction : S'assurer que le chemin est bien "notes/<categorie>/"
+        dossier_categorie = os.path.join("notes", categorie)
+
+        # Création de la note
         note = Note(titre, contenu, categorie, tags)
         self.notes.append(note)
-        FileHandler.save_note(note)
-        print(f"Note '{titre}' ajoutée et sauvegardée.")
 
+        FileHandler.save_note(note, dossier_categorie)  # Utilisation du chemin corrigé
+
+        print(f"\nNote '{titre}' ajoutée dans la catégorie '{categorie}' et sauvegardée.")
+
+
+
+    def lister_categories(self):
+        """Retourne la liste des catégories disponibles (dossiers dans 'notes/')."""
+        base_path = "notes/"
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+    
+        return [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
 
 
 

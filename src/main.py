@@ -17,7 +17,7 @@ def main():
         if choix == "1":
             menu_gestion_notes(manager)
         elif choix == "2":
-            print("Gestion des catégories (à implémenter)...")
+            menu_gestion_categories(manager)
         elif choix == "3":
             print("Recherche (à implémenter)...")
         elif choix == "4":
@@ -43,10 +43,9 @@ def menu_gestion_notes(manager):
         if choix == "1":
             titre = input("Titre : ")
             contenu = input("Contenu : ")
-            categorie = input("Catégorie : ")
             tags = input("Tags (séparés par des virgules) : ").split(",")
 
-            manager.ajouter_note(titre, contenu, categorie, tags)
+            manager.ajouter_note(titre, contenu, tags)
         elif choix == "2":
             manager.modifier_note()
         elif choix == "3":
@@ -57,6 +56,37 @@ def menu_gestion_notes(manager):
             break
         else:
             print("Choix invalide, veuillez réessayer.")
+
+
+
+def menu_gestion_categories(manager):
+    """Sous-menu pour gérer les catégories"""
+    while True:
+        print("\n=== Gestion des Catégories ===")
+        print("1. Afficher les catégories")
+        print("2. Ajouter une catégorie")
+        print("3. Supprimer une catégorie")
+        print("4. Retour au menu principal")
+
+        choix = input("Votre choix (1-4) : ")
+
+        if choix == "1":
+            manager.afficher_categories()
+        elif choix == "2":
+            manager.ajouter_categorie()
+        elif choix == "3":
+            manager.supprimer_categorie()
+        elif choix == "4":
+            break
+        else:
+            print("Choix invalide, veuillez réessayer.")
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 import yaml
 from datetime import datetime
+import re
 
 class Note:
     def __init__(self, titre: str, contenu: str, categorie: str, tags: list, auteur: str = "Inconnu",
@@ -24,8 +25,13 @@ class Note:
         yaml_header = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
         return f"---\n{yaml_header}---\n\n{self.contenu}"
 
+    
+
     def get_filename(self) -> str:
-        return f"{self.titre.replace(' ', '_').lower()}.txt"
+        """Génère un nom de fichier sécurisé basé sur le titre en retirant les caracteres spéciaux."""
+        safe_title = "".join(c if c.isalnum() or c in (" ", "-") else "" for c in self.titre)  # Supprime caractères spéciaux
+        safe_title = "_".join(safe_title.strip().split())  # Remplace espaces par des "_"
+        return f"{safe_title.lower()}.txt"
 
     @staticmethod
     def from_yaml(yaml_text: str) -> "Note":
