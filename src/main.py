@@ -66,9 +66,10 @@ def menu_gestion_categories(manager):
         print("1. Afficher les catégories")
         print("2. Ajouter une catégorie")
         print("3. Supprimer une catégorie")
-        print("4. Retour au menu principal")
+        print("4. Modifier une catégorie")
+        print("5. Retour au menu principal")
 
-        choix = input("Votre choix (1-4) : ")
+        choix = input("Votre choix (1-5) : ")
 
         if choix == "1":
             manager.afficher_categories()
@@ -77,6 +78,8 @@ def menu_gestion_categories(manager):
         elif choix == "3":
             manager.supprimer_categorie()
         elif choix == "4":
+            manager.renommer_categorie()
+        elif choix == "5":
             break
         else:
             print("Choix invalide, veuillez réessayer.")
