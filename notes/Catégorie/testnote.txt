@@ -1,11 +1,12 @@
 ---
 auteur: Inconnu
-categorie: Catégorie1
+categorie: Catégorie
 date_creation: '2025-02-20'
 date_modification: '2025-02-20'
 tags:
-- ''
-titre: note
+- test
+- ' test'
+titre: testnote
 ---
 
-c'est une note
+test

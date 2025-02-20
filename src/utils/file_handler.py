@@ -1,16 +1,14 @@
 import os
+import yaml
 from src.models.note import Note
 
 class FileHandler:
     @staticmethod
-    def save_note(note: Note, folder: str = "data/"):
-        """Enregistre une note dans le dossier spécifié sans dupliquer la catégorie."""
-        
-        # Vérifie si le dossier existe, sinon le crée
+    def save_note(note: Note, folder: str = "notes/"):
+        """Sauvegarde une note sous forme de fichier."""
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        # 🔹 Utilisation de `os.path.join` pour générer le chemin du fichier
         filename = os.path.join(folder, note.get_filename())
 
         with open(filename, "w", encoding="utf-8") as file:
@@ -20,18 +18,46 @@ class FileHandler:
 
 
     @staticmethod
-    def load_notes(folder: str = "data/"):
+    def load_notes(folder: str):
+        """Charge toutes les notes d'une catégorie."""
+        if not os.path.isdir(folder):  # Vérifier si c'est bien un dossier
+            print(f"Erreur : {folder} n'est pas un dossier.")
+            return []
+
         notes = []
-        if not os.path.exists(folder):
-            return notes  # Retourne une liste vide si le dossier n'existe pas
-
         for filename in os.listdir(folder):
-            filepath = os.path.join(folder, filename)
+            if filename.endswith(".txt"):
+                note_path = os.path.join(folder, filename)
+                note = FileHandler.load_note(note_path)
+                if note:
+                    notes.append(note)
 
-            with open(filepath, "r", encoding="utf-8") as file:
-                yaml_content = file.read()
-                note = Note.from_yaml(yaml_content)  # On suppose que Note a une méthode from_yaml()
-                notes.append(note)
-
-        print(f"{len(notes)} notes chargées depuis {folder}")
         return notes
+    
+
+    @staticmethod
+    def load_note(filepath: str):
+        """Charge une note spécifique."""
+        if not os.path.exists(filepath):
+            print(f"Erreur : Le fichier {filepath} n'existe pas.")
+            return None
+
+        with open(filepath, "r", encoding="utf-8") as file:
+            content = file.read()
+
+        # Extraction des métadonnées YAML
+        if content.startswith("---"):
+            parts = content.split("---", 2)
+            if len(parts) >= 3:
+                metadata_yaml = parts[1]
+                contenu = parts[2].strip()
+                metadata = yaml.safe_load(metadata_yaml)
+
+                return Note(
+                    titre=metadata.get("titre", "Sans titre"),
+                    contenu=contenu,
+                    categorie=metadata.get("categorie", "Sans catégorie"),
+                    tags=metadata.get("tags", []),
+                    auteur=metadata.get("auteur", "Inconnu"),
+                )
+        return None

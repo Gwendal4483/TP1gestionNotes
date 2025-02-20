@@ -51,7 +51,7 @@ def menu_gestion_notes(manager):
         elif choix == "3":
             manager.supprimer_note()
         elif choix == "4":
-            manager.afficher_notes()
+            manager.afficher_note()
         elif choix == "5":
             break
         else:

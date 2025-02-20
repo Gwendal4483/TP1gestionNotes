@@ -7,9 +7,17 @@ from src.models.note import Note
 from src.utils.file_handler import FileHandler
 
 class NoteManager:
-    def __init__(self):
-        self.notes = FileHandler.load_notes()  # Charge les notes au démarrage
+    def __init__(self, notes_folder="notes/"):
+        self.notes_folder = notes_folder
+        self.notes = FileHandler.load_notes(self.notes_folder)  # Passer le dossier des notes
 
+
+    def lister_notes(self, categorie):
+        """Retourne la liste des notes dans une catégorie donnée."""
+        dossier_categorie = os.path.join("notes", categorie)
+        if not os.path.exists(dossier_categorie):
+            return []
+        return [f for f in os.listdir(dossier_categorie) if f.endswith(".txt")]
 
 
     def ajouter_note(self, titre, contenu, tags):
@@ -117,43 +125,52 @@ class NoteManager:
             print(f"Erreur lors de la suppression : {e}")
 
 
-    def afficher_notes(self):
-        if not self.notes:
-            print("Aucune note disponible.")
+    def afficher_note(self):
+        """Affiche le contenu d'une note."""
+        categories = self.lister_categories()
+        if not categories:
+            print("Aucune catégorie disponible.")
             return
 
-        # Affichage de la liste des notes
-        print("Liste des notes :")
-        for i, note in enumerate(self.notes):
-            print(f"{i + 1}. {note.titre} ({note.categorie})")
+        # Choisir une catégorie
+        print("\nCatégories disponibles :")
+        for i, cat in enumerate(categories, 1):
+            print(f"{i}. {cat}")
 
-        # Sélection de la note
-        try:
-            choix = int(input("\nEntrez le numéro de la note à afficher (0 pour annuler) : ")) - 1
-            if choix == -1:
-                print("Annulation de la sélection.")
-                return
-            if choix < 0 or choix >= len(self.notes):
-                print("Numéro invalide, veuillez réessayer.")
-                return
+        choix_cat = input("\nChoisissez une catégorie : ").strip()
+        if not choix_cat.isdigit() or not (1 <= int(choix_cat) <= len(categories)):
+            print("Catégorie invalide.")
+            return
 
-            note = self.notes[choix]
+        categorie = categories[int(choix_cat) - 1]
+        notes = self.lister_notes(categorie)
 
-            # Affichage des détails de la note sélectionnée
-            print("\n" + "=" * 30)
-            print(f"Titre: {note.titre}")
-            print(f"Auteur: {note.auteur}")
-            print(f"Catégorie: {note.categorie}")
-            print(f"Tags: {', '.join(note.tags)}")
-            print(f"Date de création: {note.date_creation}")
-            print(f"Date de modification: {note.date_modification}")
-            print("Contenu:\n")
-            print(note.contenu)
-            print("=" * 30 + "\n")
+        if not notes:
+            print("Aucune note dans cette catégorie.")
+            return
 
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+        # Choisir une note
+        print("\nNotes disponibles :")
+        for i, note in enumerate(notes, 1):
+            print(f"{i}. {note}")
 
+        choix_note = input("\nChoisissez une note à afficher : ").strip()
+        if not choix_note.isdigit() or not (1 <= int(choix_note) <= len(notes)):
+            print("Note invalide.")
+            return
+
+        fichier_selectionne = notes[int(choix_note) - 1]
+        note_path = os.path.join("notes", categorie, fichier_selectionne)
+
+        # Charger et afficher la note
+        note = FileHandler.load_note(note_path)
+        print("\n=== Détails de la Note ===")
+        print(f"Titre       : {note.titre}")
+        print(f"Catégorie   : {note.categorie}")
+        print(f"Tags        : {', '.join(note.tags)}")
+        print(f"Créée le    : {note.date_creation}")
+        print(f"Dernière modif : {note.date_modification}")
+        print("\nContenu :\n" + note.contenu)
 
 
 
@@ -196,7 +213,7 @@ class NoteManager:
             print(f"Catégorie renommée en '{nouveau_nom}'.")
         except Exception as e:
             print(f"Erreur lors du renommage : {e}")
-    
+
 
 
 
@@ -206,98 +223,100 @@ class NoteManager:
 
 
     def modifier_note(self):
-        """Affiche la liste des notes, permet d'en choisir une et de la modifier."""
-        if not self.notes:
-            print("Aucune note disponible à modifier.")
+        """Modifie une note existante."""
+        categories = self.lister_categories()
+        if not categories:
+            print("Aucune catégorie disponible.")
             return
 
-        # Affichage de la liste des notes
-        print("\nListe des notes disponibles :")
-        for i, note in enumerate(self.notes):
-            print(f"{i + 1}. {note.titre} ({note.categorie})")
+        # Choix de la catégorie
+        print("\nCatégories disponibles :")
+        for i, cat in enumerate(categories, 1):
+            print(f"{i}. {cat}")
 
-        # Sélection d'une note
-        try:
-            choix = int(input("\nEntrez le numéro de la note à modifier (0 pour annuler) : ")) - 1
-            if choix == -1:
-                print("Annulation de la modification.")
-                return
-            if choix < 0 or choix >= len(self.notes):
-                print("Numéro invalide, veuillez réessayer.")
-                return
+        choix_cat = input("\nChoisissez une catégorie : ").strip()
+        if not choix_cat.isdigit() or not (1 <= int(choix_cat) <= len(categories)):
+            print("Catégorie invalide.")
+            return
 
-            note = self.notes[choix]
+        categorie = categories[int(choix_cat) - 1]
+        notes = self.lister_notes(categorie)
 
-            # Affichage des infos actuelles
-            print("\n=== Modification de la note ===")
-            print(f"Titre actuel : {note.titre}")
-            print(f"Catégorie actuelle : {note.categorie}")
-            print(f"Tags actuels : {', '.join(note.tags)}")
-            print("Contenu actuel :")
-            print(note.contenu)
+        if not notes:
+            print("Aucune note dans cette catégorie.")
+            return
 
-            # Modification des champs
-            note.titre = input(f"Nouveau titre ({note.titre}) : ") or note.titre
-            note.categorie = input(f"Nouvelle catégorie ({note.categorie}) : ") or note.categorie
-            note.tags = input(f"Nouveaux tags (séparés par des virgules, {', '.join(note.tags)}) : ").split(",") or note.tags
-            note.contenu = input("Nouveau contenu (laisser vide pour conserver l'ancien) : ") or note.contenu
+        # Choix de la note
+        print("\nNotes disponibles :")
+        for i, note in enumerate(notes, 1):
+            print(f"{i}. {note}")
 
-            # Mise à jour de la date de modification
-            from datetime import datetime
-            note.date_modification = datetime.now().strftime("%Y-%m-%d")
+        choix_note = input("\nChoisissez une note à modifier : ").strip()
+        if not choix_note.isdigit() or not (1 <= int(choix_note) <= len(notes)):
+            print("Note invalide.")
+            return
 
-            # Sauvegarde de la note modifiée
-            FileHandler.save_note(note)
-            print(f"\nNote '{note.titre}' modifiée avec succès !")
+        fichier_selectionne = notes[int(choix_note) - 1]
+        note_path = os.path.join("notes", categorie, fichier_selectionne)
 
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+        # Charger la note
+        note = FileHandler.load_note(note_path)
 
+        # Modifier la note
+        print(f"\nModification de la note : {note.titre}")
+        note.titre = input(f"Nouveau titre [{note.titre}] : ") or note.titre
+        note.contenu = input(f"Contenu [{note.contenu[:30]}...] : ") or note.contenu
+        note.tags = input(f"Tags [{', '.join(note.tags)}] : ").split(",") or note.tags
+
+        # Sauvegarder les modifications
+        os.remove(note_path)  # Supprimer l'ancien fichier
+        FileHandler.save_note(note, os.path.join("notes", categorie))
+        print("Note mise à jour avec succès.")
 
 
 
 
     def supprimer_note(self):
-        """Affiche la liste des notes, permet d'en choisir une et de la supprimer avec confirmation."""
-        if not self.notes:
-            print("Aucune note disponible à supprimer.")
+        """Supprime une note après confirmation."""
+        categories = self.lister_categories()
+        if not categories:
+            print("Aucune catégorie disponible.")
             return
 
-        # Affichage de la liste des notes
-        print("\nListe des notes disponibles :")
-        for i, note in enumerate(self.notes):
-            print(f"{i + 1}. {note.titre} ({note.categorie})")
+        # Choisir une catégorie
+        print("\nCatégories disponibles :")
+        for i, cat in enumerate(categories, 1):
+            print(f"{i}. {cat}")
 
-        # Sélection d'une note
-        try:
-            choix = int(input("\nEntrez le numéro de la note à supprimer (0 pour annuler) : ")) - 1
-            if choix == -1:
-                print("Annulation de la suppression.")
-                return
-            if choix < 0 or choix >= len(self.notes):
-                print("Numéro invalide, veuillez réessayer.")
-                return
+        choix_cat = input("\nChoisissez une catégorie : ").strip()
+        if not choix_cat.isdigit() or not (1 <= int(choix_cat) <= len(categories)):
+            print("Catégorie invalide.")
+            return
 
-            note = self.notes[choix]
+        categorie = categories[int(choix_cat) - 1]
+        notes = self.lister_notes(categorie)
 
-            # Confirmation avant suppression
-            confirmation = input(f"Êtes-vous sûr de vouloir supprimer la note '{note.titre}' ? (y/n) : ").strip().lower()
-            if confirmation != 'y':
-                print("Suppression annulée.")
-                return
+        if not notes:
+            print("Aucune note dans cette catégorie.")
+            return
 
-            # Suppression de la note
-            self.notes.pop(choix)
+        # Choisir une note
+        print("\nNotes disponibles :")
+        for i, note in enumerate(notes, 1):
+            print(f"{i}. {note}")
 
-            # Suppression du fichier associé
-            filename = f"data/{note.get_filename()}"
-            if os.path.exists(filename):
-                os.remove(filename)
-                print(f"Fichier '{filename}' supprimé.")
-            else:
-                print("Aucun fichier associé trouvé.")
+        choix_note = input("\nChoisissez une note à supprimer : ").strip()
+        if not choix_note.isdigit() or not (1 <= int(choix_note) <= len(notes)):
+            print("Note invalide.")
+            return
 
-            print(f"\nNote '{note.titre}' supprimée avec succès !")
+        fichier_selectionne = notes[int(choix_note) - 1]
+        note_path = os.path.join("notes", categorie, fichier_selectionne)
 
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+        confirmation = input(f"Voulez-vous vraiment supprimer '{fichier_selectionne}' ? (oui/non) : ").strip().lower()
+        if confirmation == "oui":
+            os.remove(note_path)
+            print("Note supprimée avec succès.")
+        else:
+            print("Suppression annulée.")
+
