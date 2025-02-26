@@ -127,12 +127,3 @@ auteur: "Gwendal"
 ---
 Compte-rendu de la réunion du 20 février 2025...
 ```
-
----
-
-## 🔧 Améliorations futures  
-
-✅ Sauvegarde automatique au format **Markdown** ou **PDF**  
-✅ Recherche avancée avec **filtres**  
-✅ Interface graphique **(Tkinter, PyQt)**  
-✅ Synchronisation avec un **service cloud**  
