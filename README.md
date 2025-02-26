@@ -1,8 +1,4 @@
-```md
-
-# 📝 TP1gestionNotes
-
-TP1gestionNotes est une application Python en ligne de commande permettant de **gérer des notes** de manière organisée à travers un **système de catégories**. Chaque note est sauvegardée dans un fichier texte au format **YAML** et classée dans des dossiers représentant les catégories.  
+### **README.md**
 
 ---
 
@@ -19,10 +15,15 @@ TP1gestionNotes est une application Python en ligne de commande permettant de **
 - Renommer une catégorie  
 - Supprimer une catégorie  
 
+
+✔ **Sauvegarde et Organisation**  
+- Enregistrement automatique des notes en fichiers YAML  
+- Organisation des notes dans des **dossiers par catégorie**  
+- Chargement automatique des notes au démarrage  
+
 ---
 
 ## 📂 Arborescence du Projet
-
 ```
 TP1gestionNotes/
 │── notes/                  # Dossier contenant les notes (classées par catégories)
@@ -98,6 +99,11 @@ Votre choix (1-4) :
 - **Renommer une catégorie** : Déplace les notes existantes dans un **nouveau dossier**.  
 - **Supprimer une catégorie** : Supprime le dossier et toutes ses notes (avec confirmation).  
 
+### 🔍 Recherche et Affichage  
+- Rechercher une note par **titre** ou **catégorie**  
+- Afficher toutes les notes d'une **catégorie spécifique**  
+- Consulter le **contenu détaillé** d’une note  
+
 ---
 
 ## 📄 Format des Notes
@@ -122,3 +128,33 @@ auteur: "Gwendal"
 Compte-rendu de la réunion du 20 février 2025...
 ```
 
+---
+
+## 🔧 Améliorations futures  
+
+✅ Sauvegarde automatique au format **Markdown** ou **PDF**  
+✅ Recherche avancée avec **filtres**  
+✅ Interface graphique **(Tkinter, PyQt)**  
+✅ Synchronisation avec un **service cloud**  
+
+---
+
+## 🤝 Contribuer  
+
+Les contributions sont les bienvenues !  
+Pour toute suggestion, amélioration ou correction, **ouvre une issue** ou fais une **pull request** sur GitHub.  
+
+---
+
+## 👨‍💻 Auteur  
+
+- **Gwendal4483** - [GitHub](https://github.com/Gwendal4483)
+
+---
+
+📌 **Licence** : Ce projet est sous licence MIT.  
+📌 **Statut** : 🛠️ En développement.  
+
+```
+
+---
