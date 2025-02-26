@@ -136,25 +136,3 @@ Compte-rendu de la réunion du 20 février 2025...
 ✅ Recherche avancée avec **filtres**  
 ✅ Interface graphique **(Tkinter, PyQt)**  
 ✅ Synchronisation avec un **service cloud**  
-
----
-
-## 🤝 Contribuer  
-
-Les contributions sont les bienvenues !  
-Pour toute suggestion, amélioration ou correction, **ouvre une issue** ou fais une **pull request** sur GitHub.  
-
----
-
-## 👨‍💻 Auteur  
-
-- **Gwendal4483** - [GitHub](https://github.com/Gwendal4483)
-
----
-
-📌 **Licence** : Ce projet est sous licence MIT.  
-📌 **Statut** : 🛠️ En développement.  
-
-```
-
----
